@@ -81,13 +81,16 @@ public class ProductDao {
         db.collection(COLLECTION_NAME)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<ProductModel> facturaList = new ArrayList<>();
+                    List<ProductModel> productList = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        ProductModel factura = documentSnapshot.toObject(ProductModel.class);
-                        facturaList.add(factura);
+                        ProductModel product = documentSnapshot.toObject(ProductModel.class);
+                        if (product != null) {
+                            product.setId(documentSnapshot.getId());  // Asignamos el ID del documento al modelo
+                            productList.add(product);
+                        }
                     }
-                    Log.d(TAG, "Productos cargados: " + facturaList.size());
-                    listener.onSuccess(facturaList);
+                    Log.d(TAG, "Productos cargados: " + productList.size());
+                    listener.onSuccess(productList);
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error al cargar productos", e);
@@ -95,14 +98,4 @@ public class ProductDao {
                 });
     }
 
-    public void delete(String id, OnSuccessListener<Boolean> listener) {
-        db.collection(COLLECTION_NAME)
-                .document(id)
-                .delete()
-                .addOnSuccessListener(unused -> listener.onSuccess(true))
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "onFailure: ", e);
-                    listener.onSuccess(false);
-                });
-    }
 }

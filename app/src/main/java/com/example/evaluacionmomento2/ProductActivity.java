@@ -147,5 +147,41 @@ public class ProductActivity extends AppCompatActivity {
                 }
             }
         });
+        // Manejar el botón de actualizar producto
+        btnActualizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Si hay un producto seleccionado, actualizamos
+                if (selectedProduct != null && selectedProductId != null) {
+                    String nombreProducto = tvNombreProducto.getText().toString();
+                    String precioProducto = tvPrecioProducto.getText().toString();
+
+                    // Actualizar los datos del producto seleccionado
+                    selectedProduct.setProducto(nombreProducto);
+                    selectedProduct.setPrecio(precioProducto);
+
+                    // Llamar al DAO para actualizar el producto en Firestore
+                    productDao.update(selectedProductId, selectedProduct, new OnSuccessListener<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean isSuccess) {
+                            if (isSuccess) {
+                                Toast.makeText(ProductActivity.this, "Producto actualizado", Toast.LENGTH_SHORT).show();
+                                // Limpiar los campos después de actualizar el producto
+                                tvNombreProducto.setText("");
+                                tvPrecioProducto.setText("");
+                                selectedProduct = null;
+                                selectedProductId = null;
+
+                                // Recargar la lista de productos
+                                cargarProductos();
+                            } else {
+                                Toast.makeText(ProductActivity.this, "Error al actualizar producto", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
     }
 }

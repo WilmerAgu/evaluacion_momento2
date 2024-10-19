@@ -16,17 +16,18 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
     private List<ProductModel> product;
+    private OnItemClickListener listener; // Listener para los clics
 
     public ProductAdapter(List<ProductModel> product) {
         this.product = product;
     }
 
-    private OnItemClickListener listener;
-
+    // Interfaz para manejar el evento de clic
     public interface OnItemClickListener {
         void onItemClick(ProductModel product);
     }
 
+    // Método para asignar el listener
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
@@ -46,11 +47,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.producto.setText(product.getProducto());
         holder.precio.setText(product.getPrecio());
 
-
-
+        // Manejar el clic en cada item
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onItemClick(product);
+                listener.onItemClick(product); // Pasar el producto seleccionado
             }
         });
     }
@@ -65,15 +65,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         public TextView producto;
         public TextView precio;
 
-
-
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             producto = itemView.findViewById(R.id.tvListarProducto);
             precio = itemView.findViewById(R.id.tvListarPrecio);
-
         }
     }
 }
-
