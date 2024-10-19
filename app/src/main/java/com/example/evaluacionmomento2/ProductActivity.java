@@ -36,7 +36,8 @@ public class ProductActivity extends AppCompatActivity {
         // Inicializamos las vistas
         btnCrear = findViewById(R.id.btnCrear);
         btnActualizar = findViewById(R.id.btnActualizar);
-        btnLeer = findViewById(R.id.btnLeer);  // El botón para leer la lista
+        btnLeer = findViewById(R.id.btnLeer);
+        btnEliminar = findViewById(R.id.btnEliminar);
         tvNombreProducto = findViewById(R.id.tvNombreProducto);
         tvPrecioProducto = findViewById(R.id.tvPrecioProducto);
         rvProducto = findViewById(R.id.rvProducto);
@@ -119,6 +120,37 @@ public class ProductActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Manejar el botón de eliminar producto
+        btnEliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Verificamos si hay un producto seleccionado para eliminar
+                if (selectedProductId != null) {
+                    // Llamamos al DAO para eliminar el producto en Firestore
+                    productDao.delete(selectedProductId, new OnSuccessListener<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean isSuccess) {
+                            if (isSuccess) {
+                                Toast.makeText(ProductActivity.this, "Producto eliminado", Toast.LENGTH_SHORT).show();
+                                // Limpiar los campos después de eliminar el producto
+                                tvNombreProducto.setText("");
+                                tvPrecioProducto.setText("");
+                                selectedProduct = null;
+                                selectedProductId = null;
+
+                                // Recargar la lista de productos
+                                cargarProductos();
+                            } else {
+                                Toast.makeText(ProductActivity.this, "Error al eliminar el producto", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    Toast.makeText(ProductActivity.this, "Seleccione un producto para eliminar", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void cargarProductos() {
@@ -147,41 +179,5 @@ public class ProductActivity extends AppCompatActivity {
                 }
             }
         });
-        // Manejar el botón de actualizar producto
-        btnActualizar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Si hay un producto seleccionado, actualizamos
-                if (selectedProduct != null && selectedProductId != null) {
-                    String nombreProducto = tvNombreProducto.getText().toString();
-                    String precioProducto = tvPrecioProducto.getText().toString();
-
-                    // Actualizar los datos del producto seleccionado
-                    selectedProduct.setProducto(nombreProducto);
-                    selectedProduct.setPrecio(precioProducto);
-
-                    // Llamar al DAO para actualizar el producto en Firestore
-                    productDao.update(selectedProductId, selectedProduct, new OnSuccessListener<Boolean>() {
-                        @Override
-                        public void onSuccess(Boolean isSuccess) {
-                            if (isSuccess) {
-                                Toast.makeText(ProductActivity.this, "Producto actualizado", Toast.LENGTH_SHORT).show();
-                                // Limpiar los campos después de actualizar el producto
-                                tvNombreProducto.setText("");
-                                tvPrecioProducto.setText("");
-                                selectedProduct = null;
-                                selectedProductId = null;
-
-                                // Recargar la lista de productos
-                                cargarProductos();
-                            } else {
-                                Toast.makeText(ProductActivity.this, "Error al actualizar producto", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
     }
 }

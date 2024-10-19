@@ -97,5 +97,15 @@ public class ProductDao {
                     listener.onSuccess(null);
                 });
     }
+    public void delete(String id, OnSuccessListener<Boolean> listener) {
+        db.collection(COLLECTION_NAME)
+                .document(id)
+                .delete()
+                .addOnSuccessListener(aVoid -> listener.onSuccess(true))
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error al eliminar el producto", e);
+                    listener.onSuccess(false);
+                });
+    }
 
 }
