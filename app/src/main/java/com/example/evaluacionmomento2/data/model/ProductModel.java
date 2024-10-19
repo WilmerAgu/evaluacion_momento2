@@ -1,15 +1,15 @@
 package com.example.evaluacionmomento2.data.model;
 
-public class Product {
+public class ProductModel {
 
     private String id;
     private String producto;
     private String precio;
 
-    public Product() {
+    public ProductModel() {
     }
 
-    public Product(String producto, String precio) {
+    public ProductModel(String producto, String precio) {
         this.producto = producto;
         this.precio = precio;
     }

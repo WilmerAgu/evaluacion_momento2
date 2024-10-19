@@ -2,7 +2,7 @@ package com.example.evaluacionmomento2.data.dao;
 
 import android.util.Log;
 
-import com.example.evaluacionmomento2.data.model.Product;
+import com.example.evaluacionmomento2.data.model.ProductModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,7 +24,7 @@ public class ProductDao {
         this.db = db;
     }
 
-    public void insert(Product product, OnSuccessListener<String> listener) {
+    public void insert(ProductModel product, OnSuccessListener<String> listener) {
         Map<String, Object> productData = new HashMap<>();
         productData.put("producto", product.getProducto());
         productData.put("precio", product.getPrecio());
@@ -43,7 +43,7 @@ public class ProductDao {
     }
 
 
-    public void update(String id, Product product, OnSuccessListener<Boolean> listener) {
+    public void update(String id, ProductModel product, OnSuccessListener<Boolean> listener) {
         Map<String, Object> productData = new HashMap<>();
         productData.put("producto", product.getProducto());
         productData.put("precio", product.getPrecio());
@@ -58,7 +58,7 @@ public class ProductDao {
                     listener.onSuccess(false);
                 });
     }
-    public void getById(String id, OnSuccessListener<Product> listener) {
+    public void getById(String id, OnSuccessListener<ProductModel> listener) {
         db.collection(COLLECTION_NAME)
                 .document(id)
                 .get()
@@ -66,7 +66,7 @@ public class ProductDao {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            Product product = document.toObject(Product.class);
+                            ProductModel product = document.toObject(ProductModel.class);
                             listener.onSuccess(product);
                         } else {
                             listener.onSuccess(null);
@@ -77,13 +77,13 @@ public class ProductDao {
                     }
                 });
     }
-    public void getAllProduct(OnSuccessListener<List<Product>> listener) {
+    public void getAllProduct(OnSuccessListener<List<ProductModel>> listener) {
         db.collection(COLLECTION_NAME)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Product> facturaList = new ArrayList<>();
+                    List<ProductModel> facturaList = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        Product factura = documentSnapshot.toObject(Product.class);
+                        ProductModel factura = documentSnapshot.toObject(ProductModel.class);
                         facturaList.add(factura);
                     }
                     Log.d(TAG, "Productos cargados: " + facturaList.size());
